@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define oil '@'
+#define land '*'
+#define N 105
+int visit[N][N]; //这个地方我是否走过
+char matrix[N][N]; //存储字符矩阵
+int n,m;
+
+int judge(int x,int y){
+    if(x < 0)
+        return 0;
+    if(y < 0)
+        return 0;
+    if(x >= n)
+        return 0;
+    if(y >= m)
+        return 0;
+    return 1;
+}
+const int dx[8] = {-1 , -1 , -1 , +1 , +1 , +1 , +0 , +0};
+const int dy[8] = {-1 , +0 , +1 , -1 , +0 , +1 , -1 , +1};
+//把和x,y所有联通的地方全变成搜索过的状态
+void dfs(int x,int y){
+    visit[x][y] = 1;
+    for(int j = 0;j != 8;j++){
+        int nx = x + dx[j];
+        int ny = y + dy[j];
+        if(judge(nx , ny) && matrix[nx][ny] == oil && !visit[nx][ny]){
+            dfs(nx,ny);
+        }
+    }
+}
+
+int main(){
+    while(~scanf("%d%d",&n,&m) && (n || m)){
+        memset(visit , 0 , sizeof(visit));
+        for(int j = 0;j != n;j++)
+            scanf("%s",matrix[j]);
+        int ans = 0;
+        for(int j = 0;j != n;j++){
+            for(int k = 0;k != m;k++){
+                if(matrix[j][k] == oil && !visit[j][k])
+                    dfs(j , k) , ans ++;
+                visit[j][k] = 1;
+            }
+        }
+        printf("%d\n",ans);
+    }
+    return 0;
+}
